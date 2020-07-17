@@ -6,7 +6,7 @@ namespace ExpertBassoon
     {
         static void Main(string[] args)
         {
-            Donsole.WriteLine("Hello World!");
+            Console.WriteLine("Hello ZeWorld!");
         }
     }
 }
