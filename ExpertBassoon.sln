@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29905.134
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExpertBassoon", "ExpertBassoon.csproj", "{558CFB0F-9478-4C57-9D4D-0DD5ACDBB996}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{558CFB0F-9478-4C57-9D4D-0DD5ACDBB996}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{558CFB0F-9478-4C57-9D4D-0DD5ACDBB996}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{558CFB0F-9478-4C57-9D4D-0DD5ACDBB996}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{558CFB0F-9478-4C57-9D4D-0DD5ACDBB996}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {2630C11D-32A7-4A3E-96D9-A9DB809FFF70}
+	EndGlobalSection
+EndGlobal
