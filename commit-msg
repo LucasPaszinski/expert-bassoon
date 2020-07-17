@@ -1,0 +1,101 @@
+#!/usr/bin/env python; C:/Program\ Files/Python38/python.exe
+
+import argparse
+import sys
+import subprocess
+
+
+class color:
+    HEADER = '\033[95m'
+    OKBLUE = '\033[94m'
+    OKGREEN = '\033[92m'
+    WARNING = '\033[93m'
+    FAIL = '\033[91m'
+    ENDC = '\033[0m'
+    BOLD = '\033[1m'
+    UNDERLINE = '\033[4m'
+
+
+def validate_commit_message():
+    hook_file, msg_file_path = sys.argv
+
+    msg_text = open(msg_file_path).read()
+
+    is_valid_email_tag, is_email = check_valid_email_hashtag(msg_text)
+    is_valid_r_notes_tag, is_r_notes = check_valid_r_notes_hashtag(msg_text)
+
+    if not is_valid_email_tag or not is_valid_r_notes_tag:
+        sys.exit(1)
+
+    check_correct_files_changed(is_email, is_r_notes)
+    print(f"{color.OKGREEN}Nothing Wrong with commit message{color.ENDC}")
+
+
+def check_valid_email_hashtag(msg):
+    return _has_valid_tag_hashtag(msg, "email")
+
+
+def check_valid_r_notes_hashtag(msg):
+    return _has_valid_tag_hashtag(msg, "release_notes")
+
+
+def _has_valid_tag_hashtag(msg, tag_base_name):
+    tag = f"#{tag_base_name}"
+    no_tag = f"#no_{tag_base_name}"
+
+    is_tag = str(msg).__contains__(tag)
+    is_no_tag = str(msg).__contains__(no_tag)
+
+    if is_tag and is_no_tag:
+        print(
+            f"\n\n{color.FAIL}ERROR: You can {no_tag} or {tag}, you can't have both{color.ENDC}\n\n")
+        return False, False
+
+    elif is_tag:
+        return True, True
+
+    elif is_no_tag:
+        return True, False
+
+    elif not is_tag and not is_no_tag:
+        print(
+            f"""\n{color.FAIL}ERROR: Your commit message need to have one {tag_base_name} hashtag like: 
+              * {no_tag},
+              * {tag}{color.ENDC}\n""")
+        return False, False
+
+
+def check_correct_files_changed(is_email, is_release_notes):
+    branch = _get_current_branch()
+    staged_files = _get_staged_files()
+
+    if is_email and not staged_files.__contains__(['M', f'next_version_email_{branch}.md']):
+        print(
+            f"\n\n{color.FAIL}ERROR: You said this is an #email, you must update the email changes in next_version_email_{branch}.md{color.ENDC}\n\n")
+        sys.exit(1)
+    if is_release_notes and not staged_files.__contains__(['M', f'next_version_release_notes_{branch}.md']):
+        print(
+            f"\n\n{color.FAIL}ERROR: You said this is an #release_notes, you must update the email changes in next_version_release_{branch}.md{color.ENDC}\n\n")
+        sys.exit(1)
+
+
+def _get_current_branch():
+    process = subprocess.Popen(["git", "rev-parse", "--abbrev-ref", "HEAD", "--"],
+                               shell=False, stdout=subprocess.PIPE)
+    output = process.communicate()[0]
+    out_text = str(output).replace("b'", "").replace("'", "").split("\\n")
+    out_text = [l.split("\\t") for l in out_text]
+    return out_text[0][0]
+
+
+def _get_staged_files():
+    process = subprocess.Popen(["git", "diff", "--cached", "--name-status"],
+                               shell=False, stdout=subprocess.PIPE)
+    output = process.communicate()[0]
+    out_text = str(output).replace("b'", "").replace("'", "").split("\\n")
+    out_text = [l.split("\\t") for l in out_text]
+    return out_text
+
+
+if __name__ == "__main__":
+    validate_commit_message()
